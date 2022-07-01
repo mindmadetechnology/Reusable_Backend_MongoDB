@@ -1,4 +1,4 @@
-const userModel = require('../models/fileuploadModel');
+const fileModel = require('../models/fileuploadModel');
 const mongoose = require("mongoose");
 var fs = require('fs');
 
@@ -13,7 +13,7 @@ connect.once('open', () => {
 
 
 const documentList = (req, res) => {
-    userModel.find({Isdeleted:'n'}, function (err, result) {
+    fileModel.find({Isdeleted:'n'}, function (err, result) {
         if (err) {
             res.send({ statusCode: 400, message: "There was a problem adding the information to the database." });
         } else {
@@ -31,7 +31,7 @@ const uploadDoc = (req, res) => {
     const filedata = req.files.file;
     try {
         if (req.files.file.filename === undefined) {
-            const usersave = new userModel({
+            const usersave = new fileModel({
                 name: name,
                 file: filedata
             });
@@ -60,11 +60,11 @@ const deleteDoc = (req, res) => {
     const id = req.params.id;
     const Isdeleted = "y";
     try {
-        userModel.findById({ _id: id }, function (err, result) {
+        fileModel.findById({ _id: id }, function (err, result) {
             if (err) {
                 res.send({ statusCode: 400, message: "Failed" });
             } else {
-                userModel.findOneAndUpdate({ _id: id },
+                fileModel.findOneAndUpdate({ _id: id },
                     {
                         $set: {
                             Isdeleted: Isdeleted
@@ -87,7 +87,7 @@ const deleteDocfromDB = (req, res) => {
     try {
         const Id = req.params.Id;
         const fileId = req.body.fileId;
-        userModel.findById({_id:Id}, function (err, result) {
+        fileModel.findById({_id:Id}, function (err, result) {
             if (err) {
                 res.send(err);
             } else {
@@ -97,7 +97,7 @@ const deleteDocfromDB = (req, res) => {
               let filteredFile = document.filter(function (value) {
                 return value.id != fileId;
               });
-                    userModel.findOneAndUpdate({_id:Id},
+              fileModel.findOneAndUpdate({_id:Id},
                         {
                             $set:{
                                 file:filteredFile
